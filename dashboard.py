@@ -9,8 +9,14 @@ from oauth2client.service_account import ServiceAccountCredentials
 SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
 
 # Carregar credenciais do Streamlit Secrets
-credentials_dict = json.loads(st.secrets["gcp_service_account"])
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"])
+credentials_dict = st.secrets["gcp_service_account"]
+
+# Usar as credenciais do Google diretamente
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+    credentials_dict, 
+    ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+)
+# Autorizar com o Google
 gc = gspread.authorize(credentials)
 
 # Carregar dados do Google Sheets
