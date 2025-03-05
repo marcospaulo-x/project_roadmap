@@ -40,7 +40,8 @@ with st.sidebar:
 # Tela inicial limpa
 if projeto_selecionado == "Selecionar":
     st.title("Squad Conta")
-    st.markdown("## 📊 Roadmap de Projetos e HU's")
+    st.markdown("### 📊 Roadmap de Projetos e HU's")
+    st.markdown("---")
         
     col1, col2, col3 = st.columns(3)
     col1.metric("📁 Total de Projetos", len(df_projetos))
