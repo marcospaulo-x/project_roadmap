@@ -4,7 +4,7 @@ import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-st.set_page_config(page_title="Roadmap de Projetos", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Roadmap de Projetos", layout="centered", initial_sidebar_state="collapsed", page_icon="🏠")
 
 # Configuração para acessar o Google Sheets usando Streamlit Secrets
 SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
@@ -38,6 +38,11 @@ with st.sidebar:
             selected_hu_id = None
     else:
         selected_hu_id = None
+    
+    # Botão para voltar à tela inicial
+    if st.button("🏠 Voltar à Home"):
+        projeto_selecionado = "Selecionar"
+        selected_hu_id = None
 
 # Tela inicial limpa
 if projeto_selecionado == "Selecionar":
@@ -52,18 +57,23 @@ if projeto_selecionado == "Selecionar":
         unsafe_allow_html=True,
     )
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #0078D7;">{len(df_projetos)}</div>', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #4CAF50;">{len(df_projetos[df_projetos["Status"] == "Concluído"])}</div>', unsafe_allow_html=True)
-
-    with col3:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #FF9800;">{len(df_projetos[df_projetos["Status"] == "Em Andamento"])}</div>', unsafe_allow_html=True)
+    # Cards organizados no rodapé
+    st.markdown("""
+    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 50px;">
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; width: 200px;">
+            <div style="font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>
+            <div style="font-size: 24px; color: #0078D7;">{}</div>
+        </div>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; width: 200px;">
+            <div style="font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>
+            <div style="font-size: 24px; color: #4CAF50;">{}</div>
+        </div>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; width: 200px;">
+            <div style="font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>
+            <div style="font-size: 24px; color: #FF9800;">{}</div>
+        </div>
+    </div>
+    """.format(len(df_projetos), len(df_projetos[df_projetos["Status"] == "Concluído"]), len(df_projetos[df_projetos["Status"] == "Em Andamento"])), unsafe_allow_html=True)
     
     st.markdown("---")
     
