@@ -4,6 +4,8 @@ import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+st.set_page_config(page_title="Roadmap de Projetos", layout="wide", initial_sidebar_state="collapsed")
+
 # Configuração para acessar o Google Sheets usando Streamlit Secrets
 SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
 
@@ -39,14 +41,29 @@ with st.sidebar:
 
 # Tela inicial limpa
 if projeto_selecionado == "Selecionar":
-    st.title("Squad Conta")
-    st.markdown("### 📊 Roadmap de Projetos e HU's")
-    st.markdown("---")
-        
+    st.markdown(
+        """
+        <h1 style="text-align: center; color: #333;">📊 Roadmap de Projetos e HU's</h1>
+        <h3 style="text-align: center; color: #0078D7;">Squad Conta</h3>
+        <p style="text-align: center; font-size: 16px; color: #555;">
+            Bem-vindo ao painel de projetos! Selecione um projeto e uma HU no menu lateral para visualizar os detalhes.
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
+    
     col1, col2, col3 = st.columns(3)
-    col1.metric("📁 Total de Projetos", len(df_projetos))
-    col2.metric("✅ Projetos Concluídos", len(df_projetos[df_projetos["Status"] == "Concluído"]))
-    col3.metric("🚀 Em Andamento", len(df_projetos[df_projetos["Status"] == "Em Andamento"]))
+    with col1:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #0078D7;">{len(df_projetos)}</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #4CAF50;">{len(df_projetos[df_projetos["Status"] == "Concluído"])}</div>', unsafe_allow_html=True)
+
+    with col3:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #FF9800;">{len(df_projetos[df_projetos["Status"] == "Em Andamento"])}</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     
