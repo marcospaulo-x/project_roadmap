@@ -39,16 +39,16 @@ with st.sidebar:
 
 # Tela inicial limpa
 if projeto_selecionado == "Selecionar":
-    st.title("📊 Roadmap de Projetos e HUs")
-    st.markdown("---")
-    
+    st.title("Squad Conta")
+    st.markdown("## 📊 Roadmap de Projetos e HU's")
+        
     col1, col2, col3 = st.columns(3)
     col1.metric("📁 Total de Projetos", len(df_projetos))
     col2.metric("✅ Projetos Concluídos", len(df_projetos[df_projetos["Status"] == "Concluído"]))
     col3.metric("🚀 Em Andamento", len(df_projetos[df_projetos["Status"] == "Em Andamento"]))
     
     st.markdown("---")
-    st.markdown("## 🔹 Squad Conta")
+    
 else:
     # Exibir detalhes da HU primeiro
     st.write(f"## 📋 Detalhes da HU {selected_hu_id}")
