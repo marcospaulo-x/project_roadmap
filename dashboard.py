@@ -46,7 +46,7 @@ if projeto_selecionado == "Selecionar":
         <h1 style="text-align: center; color: #fff;">📊 Roadmap de Projetos e HU's</h1>
         <h2 style="text-align: center; color: #0078D7;">Squad Conta</h2>
         <p style="text-align: center; font-size: 17px; color: #fff;">
-            Bem-vindo ao painel de projetos! Selecione um projeto e uma HU no menu lateral para visualizar os detalhes.
+            Bem-vindo ao painel de projetos!<br>Selecione um projeto e uma HU no menu lateral para visualizar os detalhes.
         </p>
         """,
         unsafe_allow_html=True,
