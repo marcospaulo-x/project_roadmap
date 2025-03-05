@@ -43,9 +43,9 @@ with st.sidebar:
 if projeto_selecionado == "Selecionar":
     st.markdown(
         """
-        <h1 style="text-align: center; color: #333;">📊 Roadmap de Projetos e HU's</h1>
-        <h3 style="text-align: center; color: #0078D7;">Squad Conta</h3>
-        <p style="text-align: center; font-size: 16px; color: #555;">
+        <h1 style="text-align: center; color: #fff;">📊 Roadmap de Projetos e HU's</h1>
+        <h2 style="text-align: center; color: #0078D7;">Squad Conta</h2>
+        <p style="text-align: center; font-size: 17px; color: #fff;">
             Bem-vindo ao painel de projetos! Selecione um projeto e uma HU no menu lateral para visualizar os detalhes.
         </p>
         """,
