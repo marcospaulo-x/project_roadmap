@@ -3,15 +3,8 @@ import pandas as pd
 import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import json
 
-# Configuração da página
-st.set_page_config(
-    page_title="Roadmap de Projetos",
-    layout="centered",
-    initial_sidebar_state="collapsed",
-    page_icon="📊",
-)
+st.set_page_config(page_title="Roadmap de Projetos", layout="centered", initial_sidebar_state="collapsed")
 
 # Configuração para acessar o Google Sheets usando Streamlit Secrets
 SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
@@ -32,7 +25,7 @@ sh = gc.open_by_key(SHEET_ID)
 df_projetos = pd.DataFrame(sh.worksheet("Projetos").get_all_records())
 df_hus = pd.DataFrame(sh.worksheet("HUs").get_all_records())
 
-# Sidebar para seleção de projetos e HUs
+# Configuração do Sidebar
 with st.sidebar:
     st.title("📂 Seleção de Projetos e HUs")
     projeto_selecionado = st.selectbox("Selecione um projeto", ["Selecionar"] + list(df_projetos["Nome do projeto"]))
@@ -46,91 +39,36 @@ with st.sidebar:
     else:
         selected_hu_id = None
 
-# Estilos CSS personalizados
-st.markdown(
-    """
-    <style>
-        .card {
-            background-color: #f0f2f6;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-            margin: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .card h3 {
-            font-size: 20px;
-            color: #333;
-        }
-        .card p {
-            font-size: 24px;
-            color: #0078D7;
-            font-weight: bold;
-        }
-        .welcome-text {
-            text-align: center;
-            font-size: 18px;
-            color: #fff;
-            margin-bottom: 30px;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 24px;
-            color: #0078D7;
-            margin-bottom: 20px;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Tela inicial
+# Tela inicial limpa
 if projeto_selecionado == "Selecionar":
-    # Título e animação
-    st.markdown('<h1 style="text-align: center; color: #fff;">📊 Roadmap de Projetos e HU\'s</h1>', unsafe_allow_html=True)
-    
-    # Mensagem de boas-vindas
     st.markdown(
         """
-        <div class="welcome-text">
-            Olá, seja bem-vindo(a)!<br>Explore os projetos e acompanhe o progresso das HUs.
-        </div>
+        <h1 style="text-align: center; color: #fff;">📊 Roadmap de Projetos e HU's</h1>
+        <h2 style="text-align: center; color: #0078D7;">Squad Conta</h2>
+        <p style="text-align: center; font-size: 17px; color: #fff;">
+            Bem-vindo ao painel de projetos!<br>Selecione um projeto e uma HU no menu lateral para visualizar os detalhes.
+        </p>
         """,
         unsafe_allow_html=True,
     )
-
-    # Cards de métricas
+    
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown(
-            '<div class="card"><h3>📁 Total de Projetos</h3><p>{}</p></div>'.format(len(df_projetos)),
-            unsafe_allow_html=True,
-        )
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #0078D7;">{len(df_projetos)}</div>', unsafe_allow_html=True)
+    
     with col2:
-        st.markdown(
-            '<div class="card"><h3>✅ Projetos Concluídos</h3><p>{}</p></div>'.format(len(df_projetos[df_projetos["Status"] == "Concluído"])),
-            unsafe_allow_html=True,
-        )
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #4CAF50;">{len(df_projetos[df_projetos["Status"] == "Concluído"])}</div>', unsafe_allow_html=True)
+
     with col3:
-        st.markdown(
-            '<div class="card"><h3>🚀 Em Andamento</h3><p>{}</p></div>'.format(len(df_projetos[df_projetos["Status"] == "Em Andamento"])),
-            unsafe_allow_html=True,
-        )
-
-    # Gráfico de distribuição de status
-    st.markdown('<div class="section-title">Distribuição de Status dos Projetos</div>', unsafe_allow_html=True)
-    status_counts = df_projetos["Status"].value_counts()
-    fig = px.pie(status_counts, values=status_counts.values, names=status_counts.index, title="")
-    st.plotly_chart(fig, use_container_width=True)
-
-    # Botão para atualizar dados
-    if st.button("🔄 Atualizar Dados"):
-        st.experimental_rerun()
-
-# Tela de detalhes do projeto e HU
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #FF9800;">{len(df_projetos[df_projetos["Status"] == "Em Andamento"])}</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
 else:
-    # Detalhes da HU
+    # Exibir detalhes da HU primeiro
     st.write(f"## 📋 Detalhes da HU {selected_hu_id}")
     hu_filtrada = df_hus[df_hus["ID"] == selected_hu_id]
     if not hu_filtrada.empty:
@@ -170,8 +108,8 @@ else:
     else:
         st.warning("Nenhuma HU encontrada para o projeto selecionado.")
     
-    # Visão Geral dos Projetos
+    # Visão Geral dos Projetos abaixo dos detalhes da HU
     st.write("## 🚀 Visão Geral dos Projetos")
     fig = px.bar(df_projetos, x="Nome do projeto", y="Progresso", color="Status", title="Progresso dos Projetos", 
                  color_discrete_map={"Em Andamento": "#FFCC00", "Concluído": "#4CAF50"})
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
