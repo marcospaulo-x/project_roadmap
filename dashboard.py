@@ -52,41 +52,22 @@ if projeto_selecionado == "Selecionar":
         unsafe_allow_html=True,
     )
     
-    # Adicionar uma coluna com borda branca e informações dos projetos
-    st.markdown(
-        """
-        <div style="
-            border: 1px solid #fff;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-        ">
-            <div style="font-size: 20px; font-weight: bold; color: #fff;">
-                📁 Total de Projetos: <span style="color: #0078D7;">{}</span>
-            </div>
-            <div style="font-size: 20px; font-weight: bold; color: #fff;">
-                ✅ Projetos Concluídos: <span style="color: #4CAF50;">{}</span>
-            </div>
-            <div style="font-size: 20px; font-weight: bold; color: #fff;">
-                🚀 Em Andamento: <span style="color: #FF9800;">{}</span>
-            </div>
-        </div>
-        """.format(
-            len(df_projetos),
-            len(df_projetos[df_projetos["Status"] == "Concluído"]),
-            len(df_projetos[df_projetos["Status"] == "Em Andamento"])
-        ),
-        unsafe_allow_html=True,
-    )
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #0078D7;">{len(df_projetos)}</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #4CAF50;">{len(df_projetos[df_projetos["Status"] == "Concluído"])}</div>', unsafe_allow_html=True)
+
+    with col3:
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; color: #FF9800;">{len(df_projetos[df_projetos["Status"] == "Em Andamento"])}</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     
 else:
-    # Botão de Home para voltar à tela inicial
-    if st.button("🏠 Voltar para Home"):
-        st.experimental_rerun()
-
     # Exibir detalhes da HU primeiro
     st.write(f"## 📋 Detalhes da HU {selected_hu_id}")
     hu_filtrada = df_hus[df_hus["ID"] == selected_hu_id]
