@@ -4,7 +4,7 @@ import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-st.set_page_config(page_title="Roadmap de Projetos", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Roadmap de Projetos", layout="centered", initial_sidebar_state="collapsed")
 
 # Configuração para acessar o Google Sheets usando Streamlit Secrets
 SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
