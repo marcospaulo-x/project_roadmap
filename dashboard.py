@@ -52,60 +52,22 @@ if projeto_selecionado == "Selecionar":
         unsafe_allow_html=True,
     )
     
-    # Adicionar uma coluna com borda branca e informações dos projetos
-    st.markdown(
-        """
-        <div style="
-            border: 1px solid #fff;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-        ">
-        """,
-        unsafe_allow_html=True,
-    )
-    
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold; color: #fff;">📁 Total de Projetos</div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">📁 Total de Projetos</div>', unsafe_allow_html=True)
         st.markdown(f'<div style="text-align: center; font-size: 24px; color: #0078D7;">{len(df_projetos)}</div>', unsafe_allow_html=True)
     
     with col2:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold; color: #fff;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">✅ Projetos Concluídos</div>', unsafe_allow_html=True)
         st.markdown(f'<div style="text-align: center; font-size: 24px; color: #4CAF50;">{len(df_projetos[df_projetos["Status"] == "Concluído"])}</div>', unsafe_allow_html=True)
 
     with col3:
-        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold; color: #fff;">🚀 Em Andamento</div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; font-size: 20px; font-weight: bold;">🚀 Em Andamento</div>', unsafe_allow_html=True)
         st.markdown(f'<div style="text-align: center; font-size: 24px; color: #FF9800;">{len(df_projetos[df_projetos["Status"] == "Em Andamento"])}</div>', unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)  # Fechar a div da borda branca
     
     st.markdown("---")
     
 else:
-    # Botão de Home para redirecionar para a URL da home
-    st.markdown(
-        """
-        <div style="text-align: center; margin-bottom: 20px;">
-            <a href="https://dashboard-projetos.streamlit.app/" target="_self">
-                <button style="
-                    background-color: #0078D7;
-                    color: white;
-                    padding: 10px 20px;
-                    border: none;
-                    border-radius: 5px;
-                    font-size: 16px;
-                    cursor: pointer;
-                ">
-                    🏠 Voltar para Home
-                </button>
-            </a>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
     # Exibir detalhes da HU primeiro
     st.write(f"## 📋 Detalhes da HU {selected_hu_id}")
     hu_filtrada = df_hus[df_hus["ID"] == selected_hu_id]
