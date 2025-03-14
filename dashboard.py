@@ -1,29 +1,56 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import plotly.express as px
 
+# Configuração da página
 st.set_page_config(page_title="Roadmap de Projetos", layout="centered", initial_sidebar_state="collapsed")
 
-# Configuração para acessar o Google Sheets usando Streamlit Secrets
-SHEET_ID = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"
+# Configuração para acessar o Google Sheets
+SHEET_ID_DASHBOARD = "1QmdhLGP516CoHxDbORqw2ZV-F2_4UzKjxMfOrJnOFEA"  # Planilha do dashboard
+SHEET_ID_CONTROLE_HUS = "1gFNF8913BXRArSLlILxdleDY5fHXq7B-S9SgiZSxNmA"  # Planilha do backoffice
 
 # Carregar credenciais do Streamlit Secrets
 credentials_dict = st.secrets["gcp_service_account"]
 
-# Usar as credenciais do Google diretamente
+# Autorizar com o Google
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(
     credentials_dict, 
     ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 )
-# Autorizar com o Google
 gc = gspread.authorize(credentials)
 
 # Carregar dados do Google Sheets
-sh = gc.open_by_key(SHEET_ID)
-df_projetos = pd.DataFrame(sh.worksheet("Projetos").get_all_records())
-df_hus = pd.DataFrame(sh.worksheet("HUs").get_all_records())
+sh_dashboard = gc.open_by_key(SHEET_ID_DASHBOARD)  # Planilha do dashboard
+sh_controle_hus = gc.open_by_key(SHEET_ID_CONTROLE_HUS)  # Planilha do backoffice
+
+# Carregar dados das abas
+df_projetos = pd.DataFrame(sh_dashboard.worksheet("Projetos").get_all_records())
+df_hus = pd.DataFrame(sh_dashboard.worksheet("HUs").get_all_records())
+df_controle_hus = pd.DataFrame(sh_controle_hus.worksheet("Controle de HU's").get_all_records())  # Nova linha
+
+# Função para exibir cards de detalhes
+def exibir_card(titulo, valor, icone, cor_fundo="white", cor_texto="black"):
+    st.markdown(
+        f"""
+        <div style="
+            background-color: {cor_fundo};
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            color: {cor_texto};
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        ">
+            <div style="font-size: 24px; font-weight: bold;">{icone} {titulo}</div>
+            <div style="font-size: 20px; font-weight: bold;">{valor}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # Configuração do Sidebar
 with st.sidebar:
@@ -69,46 +96,45 @@ if projeto_selecionado == "Selecionar":
     
 else:
     # Exibir detalhes da HU primeiro
-    st.write(f"## 📋 Detalhes da HU {selected_hu_id}")
+    st.write(f"## 📋 Acompanhamento da {selected_hu_id}")
     hu_filtrada = df_hus[df_hus["ID"] == selected_hu_id]
+    
     if not hu_filtrada.empty:
         hu_detalhes = hu_filtrada.iloc[0]
         
-        def exibir_card(titulo, valor, icone, cor_fundo="white", cor_texto="black"):
-            st.markdown(
-                f"""
-                <div style="
-                    background-color: {cor_fundo};
-                    padding: 10px;
-                    border-radius: 10px;
-                    border: 1px solid #ddd;
-                    margin: 5px 0;
-                    color: {cor_texto};
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                ">
-                    <div style="font-size: 24px; font-weight: bold;">{icone} {titulo}</div>
-                    <div style="font-size: 20px; font-weight: bold;">{valor}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        
+        # Exibir cards de detalhes da HU
         exibir_card("Descrição", hu_detalhes["Descrição"], "📝", "#f0f8ff", "#333")
         exibir_card("Status", hu_detalhes["Status"], "📌", "#fff3cd", "#856404")
         exibir_card("Progresso", f"{hu_detalhes['Progresso']}%", "📊", "#e2f0d9", "#4caf50")
         exibir_card("Data de Início", hu_detalhes["Data de Início"], "📅", "#e3f2fd", "#0d47a1")
         exibir_card("Previsão de Conclusão", hu_detalhes["Previsão de Conclusão"], "⏳", "#ffebee", "#c62828")
 
-        st.write("### Progresso da HU")
+        st.write("### Barra de progresso")
         st.progress(hu_detalhes["Progresso"] / 100)
+
+        st.markdown("---")        
+        # Buscar o link do Confluence na planilha "Controle de HU's"
+        hu_controle = df_controle_hus[df_controle_hus["ID_HU"] == selected_hu_id]
+        
+        if not hu_controle.empty:
+            link_confluence = hu_controle.iloc[0]["Link"]
+            
+            # Exibir o iframe com o Confluence
+            st.write("### História de usuário aprovada ✅")
+            st.components.v1.html(
+                f"""
+                <iframe src="{link_confluence}" width="100%" height="800px" style="border: 1px solid #ddd; border-radius: 10px;"></iframe>
+                """,
+                height=800,
+            )
+        else:
+            st.warning("Nenhum link do Confluence encontrado para esta HU.")
         
         st.markdown("---")
     else:
         st.warning("Nenhuma HU encontrada para o projeto selecionado.")
     
-    # Visão Geral dos Projetos abaixo dos detalhes da HU
+    # Visão Geral dos Projetos
     st.write("## 🚀 Visão Geral dos Projetos")
     fig = px.bar(df_projetos, x="Nome do projeto", y="Progresso", color="Status", title="Progresso dos Projetos", 
                  color_discrete_map={"Em Andamento": "#FFCC00", "Concluído": "#4CAF50"})
